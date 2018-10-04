@@ -71,7 +71,7 @@ class ActionLayer:
     ...
     def test_parents(self):
         for literal in self:
-            assert all(literal in action.effects for action in self.children[literal])
+            assert all(literal in action.effects for action in self.parents[literal])
 
             for action in self.parents[literal]:
                 print(action)
