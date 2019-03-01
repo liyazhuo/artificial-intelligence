@@ -138,7 +138,19 @@ class PlanningGraph:
         layer.update_mutexes()
         self.literal_layers = [layer]
         self.action_layers = []
+     
+        
+        
+    def level_cost(self, goal):
+        layers = self.literal_layers
+        level_number = 0
+        for l in layers:
+            if goal in l:
+                return level_number
+            else:
+                level_number +=1
 
+        
     def h_levelsum(self):
         """ Calculate the level sum heuristic for the planning graph
 
@@ -165,8 +177,13 @@ class PlanningGraph:
         Russell-Norvig 10.3.1 (3rd Edition)
         """
         # TODO: implement this function
-        raise NotImplementedError
-
+        costs = []
+        self.fill()
+        for g in self.goal:
+            costs.append(self.level_cost(g))
+        return sum(costs)
+        
+        
     def h_maxlevel(self):
         """ Calculate the max level heuristic for the planning graph
 
@@ -195,7 +212,11 @@ class PlanningGraph:
         WARNING: you should expect long runtimes using this heuristic with A*
         """
         # TODO: implement maxlevel heuristic
-        raise NotImplementedError
+        costs = []
+        self.fill()
+        for g in self.goal:
+            costs.append(self.level_cost(g))
+        return max(costs)
 
     def h_setlevel(self):
         """ Calculate the set level heuristic for the planning graph
@@ -220,7 +241,20 @@ class PlanningGraph:
         WARNING: you should expect long runtimes using this heuristic on complex problems
         """
         # TODO: implement setlevel heuristic
-        raise NotImplementedError
+        
+        self.fill()
+        layers = self.literal_layers
+        level_number = 0
+
+        for l in layers:
+            if all(g in l for g in self.goal):
+                if not any(l.is_mutex(goalA, goalB) for goalA in self.goal for goalB in self.goal):     
+                    return level_number
+            level_number += 1 
+        #return -1
+                  
+                
+                
 
     ##############################################################################
     #                     DO NOT MODIFY CODE BELOW THIS LINE                     #
