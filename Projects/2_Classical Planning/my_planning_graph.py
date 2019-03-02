@@ -140,17 +140,6 @@ class PlanningGraph:
         self.action_layers = []
      
         
-        
-    def level_cost(self, goal):
-        layers = self.literal_layers
-        level_number = 0
-        for l in layers:
-            if goal in l:
-                return level_number
-            else:
-                level_number +=1
-
-        
     def h_levelsum(self):
         """ Calculate the level sum heuristic for the planning graph
 
@@ -177,13 +166,23 @@ class PlanningGraph:
         Russell-Norvig 10.3.1 (3rd Edition)
         """
         # TODO: implement this function
-        costs = []
-        self.fill()
-        for g in self.goal:
-            costs.append(self.level_cost(g))
-        return sum(costs)
         
-        
+        level_number = 0
+        level_sum = 0
+        goals_yet_achieved = self.goal
+        while not self._is_leveled: #Stop when all levels are extended
+            goals_achieved = set()
+            for g in goals_yet_achieved: #loop through unachieved goals
+                if g in self.literal_layers[-1]: #check whether goal is in last literal layer
+                    level_sum += level_number #record the level number if goal found
+                    goals_achieved.add(g)
+
+            for ga in goals_achieved: #remove the goals achieved
+                goals_yet_achieved.remove(ga)
+            self._extend()
+            level_number += 1
+        return level_sum
+
     def h_maxlevel(self):
         """ Calculate the max level heuristic for the planning graph
 
@@ -212,12 +211,18 @@ class PlanningGraph:
         WARNING: you should expect long runtimes using this heuristic with A*
         """
         # TODO: implement maxlevel heuristic
-        costs = []
-        self.fill()
-        for g in self.goal:
-            costs.append(self.level_cost(g))
-        return max(costs)
-
+        level_number = 0
+        while not self._is_leveled:#Loop until all levels are extended
+            all_goals_met = True 
+            for g in self.goal: 
+                if g not in self.literal_layers[-1]:#check whether goal is in the last literal layer
+                    all_goals_met = False # Flag to mark whether all goals have been found
+            if all_goals_met : #all goals found, only the max level one switch the flag
+                return level_number
+            else:
+                self._extend()
+                level_number += 1
+        
     def h_setlevel(self):
         """ Calculate the set level heuristic for the planning graph
 
@@ -242,16 +247,16 @@ class PlanningGraph:
         """
         # TODO: implement setlevel heuristic
         
-        self.fill()
-        layers = self.literal_layers
         level_number = 0
-
-        for l in layers:
-            if all(g in l for g in self.goal):
-                if not any(l.is_mutex(goalA, goalB) for goalA in self.goal for goalB in self.goal):     
-                    return level_number
+        while not self._is_leveled:
+            if all(g in self.literal_layers[-1] for g in self.goal):
+            # Find the first level in which literal layer all goals appear
+                if not any(self.literal_layers[-1].is_mutex(goalA, goalB) for goalA in self.goal for goalB in self.goal):     
+                #Check whether goals are mutually exclusive
+                    return level_number #Return the level number if goals are not mutually exclusive 
+            self._extend()
             level_number += 1 
-        #return -1
+
                   
                 
                 
