@@ -50,15 +50,54 @@ class CustomPlayer(DataPlayer):
             self.queue.put(random.choice(state.actions()))
         else:
 
-            self.queue.put(random.choice(state.actions())) #call self.queue.put(ACTION) at least once          
-            if not state.terminal_test():
-                '''Monte Carlo Tree Search '''
-                mcts = MonteCarloTreeSearch(GameTreeNode(state), e_e_ratio = 1.414)
-                #e_e_ratio is the ratio between exploitation and exploration
-                while True:
-                    mcts.run_search()
-                    best_action = mcts.best_action()
-                    self.queue.put(best_action)
+            # self.queue.put(random.choice(state.actions())) #call self.queue.put(ACTION) at least once          
+            # if not state.terminal_test():
+            #     """Monte Carlo Tree Search """
+            #     mcts = MonteCarloTreeSearch(GameTreeNode(state), e_e_ratio = 1.414)
+            #     #e_e_ratio is the ratio between exploitation and exploration
+            #     while True:
+            #         mcts.run_search()
+            #         best_action = mcts.best_action()
+            #         self.queue.put(best_action)
+
+            """Alpha Beta Pruning with iterative deepening"""
+            self.queue.put(self.alpha_beta_pruning(state, depth=3))    
+
+    def alpha_beta_pruning(self, state, depth):
+        
+        def min_value(state, alpha, beta, depth):
+            if state.terminal_test(): return state.utility(self.player_id)
+            if depth <= 0: return self.score(state)
+            value = float("inf")
+            for action in state.actions():
+                value = min(value, max_value(state.result(action), alpha, beta, depth - 1))
+                if value <= alpha:
+                    return value
+                beta = min(beta, value)
+            return value
+
+        def max_value(state, alpha, beta, depth):
+            if state.terminal_test(): return state.utility(self.player_id)
+            if depth <= 0: return self.score(state)
+            value = float("-inf")
+            for action in state.actions():
+                value = max(value, min_value(state.result(action),alpha, beta, depth - 1))
+                if value >= beta:
+                    return value
+                alpha = max(alpha, value)
+            return value
+        
+        alpha = float("-inf")
+        beta = float("inf")
+        return max(state.actions(), key=lambda x: min_value(state.result(x), alpha, beta,depth - 1))
+
+    def score(self, state):
+        own_loc = state.locs[self.player_id]
+        opp_loc = state.locs[1 - self.player_id]
+        own_liberties = state.liberties(own_loc)
+        opp_liberties = state.liberties(opp_loc)
+        return len(own_liberties) - len(opp_liberties)
+
 
 class GameTreeNode():
     def __init__(self, state, parent = None):
@@ -137,4 +176,3 @@ class MonteCarloTreeSearch():
 
     def best_action(self):
         return self.root.best_action()
-
