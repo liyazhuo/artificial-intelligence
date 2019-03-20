@@ -1,0 +1,133 @@
+200 matches
+VS MINIMAX
+ratio = 0.5:
+500ms % 
+350ms %
+250ms %
+150ms %
+
+ratio = 0.75
+500ms 67%
+350ms 67%
+250ms 63.5%
+150ms 64.5%
+
+ratio = 1.0
+500ms 78.5% 71.8
+350ms 68.5% 68.5
+250ms 66% 64.5
+150ms 65% 60.7
+
+ratio = 1.25
+500ms 75% 72.8
+350ms 70.5% 68.4
+250ms 64.5% 67.9%
+150ms 64% 63.6
+
+ratio = 1.5:
+500ms 75% 
+350ms 65.5%
+250ms 62.5%
+150ms 65%
+
+ratio = 1.75:
+500ms % 
+350ms %
+250ms %
+150ms %
+
+
+
+VS RANDOM
+ratio = 1.0
+500ms 99.5
+350ms 99.5%
+250ms 97%
+150ms 96%
+
+VS GREEDY
+ratio = 1.0
+500ms 85%
+350ms 85.5%
+250ms 83%
+150ms 79%
+
+
+
+VS RANDOM
+ratio = 1.25
+500ms 99.5%
+350ms 99.5%
+250ms 98%
+150ms 96.2%
+
+VS GREEDY
+ratio = 1.25
+500ms 87.6%
+350ms 86.7%
+250ms 85.7%
+150ms 83.9%
+
+
+
+1000 games
+vs MINIMAX
+baseline: depth = 5
+500ms 63.8%
+350ms 62.8%
+250ms 63.9%
+150ms 62.4%
+
+baseline: depth = 4
+500ms 53.4%
+350ms 50.8%
+250ms 53.6%
+150ms 53.3%
+
+baseline: depth = 3
+500ms 51%
+350ms 50%
+250ms 47.2%
+150ms 53.2%
+
+
+VS RANDOM
+baseline depth = 5
+500ms
+350ms
+250ms
+150ms
+
+baseline depth = 4
+500ms 93.8
+350ms 94
+250ms 93.7
+150ms 93.2
+
+baseline depth = 3
+500ms 92.5%
+350ms 94.1%
+250ms 93.9%
+150ms 94.7%%
+
+VS GREEDY
+baseline depth = 5
+500ms 
+350ms 
+250ms 
+150ms 
+
+baseline depth = 4
+500ms 75.7
+350ms 77.2
+250ms 77.5
+150ms 78
+
+
+baseline depth = 3
+500ms 63.7%
+350ms 65.3%
+250ms 64%
+150ms 63.6% 
+
+
