@@ -1,21 +1,17 @@
-
 from sample_players import DataPlayer
 import random
 from math import sqrt, log
 
 class CustomPlayer(DataPlayer):
     """ Implement your own agent to play knight's Isolation
-
     The get_action() method is the only required method for this project.
     You can modify the interface for get_action by adding named parameters
     with default values, but the function MUST remain compatible with the
     default interface.
-
     **********************************************************************
     NOTES:
     - The test cases will NOT be run on a machine with GPU access, nor be
       suitable for using any other machine learning techniques.
-
     - You can pass state forward to your agent on the next turn by assigning
       any pickleable object to the self.context attribute.
     **********************************************************************
@@ -24,13 +20,10 @@ class CustomPlayer(DataPlayer):
     def get_action(self, state):
         """ Employ an adversarial search technique to choose an action
         available in the current state calls self.queue.put(ACTION) at least
-
         This method must call self.queue.put(ACTION) at least once, and may
         call it as many times as you want; the caller will be responsible
         for cutting off the function after the search time limit has expired.
-
         See RandomPlayer and GreedyPlayer in sample_players for more examples.
-
         **********************************************************************
         NOTE: 
         - The caller is responsible for cutting off search, so calling
@@ -53,15 +46,15 @@ class CustomPlayer(DataPlayer):
             self.queue.put(random.choice(state.actions())) #call self.queue.put(ACTION) at least once          
             if not state.terminal_test():
                 """Monte Carlo Tree Search """
-                mcts = MonteCarloTreeSearch(GameTreeNode(state), e_e_ratio = 1.414)
+                mcts = MonteCarloTreeSearch(GameTreeNode(state), e_e_ratio = 1.5)
                 #e_e_ratio is the ratio between exploitation and exploration
                 while True:
                     mcts.run_search()
                     best_action = mcts.best_action()
                     self.queue.put(best_action)
 
-    #         """Alpha Beta Pruning with iterative deepening"""
-    #         self.queue.put(self.alpha_beta_pruning(state, depth=3))    
+    #          """Alpha Beta Pruning with iterative deepening"""
+    #          self.queue.put(self.alpha_beta_pruning(state, depth=7))    
 
     # def alpha_beta_pruning(self, state, depth):
         
@@ -98,7 +91,7 @@ class CustomPlayer(DataPlayer):
     #     opp_liberties = state.liberties(opp_loc)
     #     return len(own_liberties) - len(opp_liberties)
 
-
+ 
 class GameTreeNode():
     def __init__(self, state, parent = None):
         self.state = state
