@@ -157,16 +157,16 @@ class MonteCarloTreeSearch():
             return 0.0
 
 
-    def back_up_negameax(self, node, delta): # backpropagations after simulation
+    def back_up_negamax(self, node, delta): # backpropagations after simulation
             node.num_visited = node.num_visited + 1
             node.reward = node.reward + delta
             if node.parent:
-                self.back_up_negameax(node.parent, -delta)
+                self.back_up_negamax(node.parent, -delta)
 
     def run_search(self):
         start_node = self.tree_policy()
         delta = self.default_policy(start_node.state)
-        self.back_up_negameax(start_node, delta)
+        self.back_up_negamax(start_node, delta)
 
     def best_action(self):
         return self.root.best_action()
