@@ -46,7 +46,7 @@ class CustomPlayer(DataPlayer):
             self.queue.put(random.choice(state.actions())) #call self.queue.put(ACTION) at least once          
             if not state.terminal_test():
                 """Monte Carlo Tree Search """
-                mcts = MonteCarloTreeSearch(GameTreeNode(state), e_e_ratio = 1.5)
+                mcts = MonteCarloTreeSearch(GameTreeNode(state), e_e_ratio = 1.25)
                 #e_e_ratio is the ratio between exploitation and exploration
                 while True:
                     mcts.run_search()
@@ -119,6 +119,7 @@ class GameTreeNode():
 
     def best_action(self):
         #action associated with the best node
+        #Here the mosted visited nodes are selected
         best_child = max(self.children.keys(), key = lambda c: c.num_visited)
         return self.children[best_child]
 
@@ -131,7 +132,7 @@ class MonteCarloTreeSearch():
         self.e_e_ratio = e_e_ratio
 
 
-    def tree_policy(self): 
+    def tree_policy(self): #Tree policy for expansion using UCT
         current_node = self.root
         while not current_node.is_terminal() :
             if current_node.untried_actions:
